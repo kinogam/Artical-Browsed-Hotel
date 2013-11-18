@@ -19,8 +19,13 @@ define([
                 expots.init();
             }
 
-            if (!isExist(item)) {
+            var itemIndex = getItemIndex(item);
+
+            if (itemIndex === -1) {
                 hotelList.push(item);
+            }
+            else {
+                hotelList[itemIndex] = item;
             }
 
             updateStore();
@@ -47,12 +52,12 @@ define([
             browserStore.setItem(storeName, JSON.stringify(hotelList));
         }
 
-        function isExist(item) {
+        function getItemIndex(item) {
             for (var i = 0, len = hotelList.length; i < len; i++) {
                 if (hotelList[i].name === item.name) {
-                    return true;
+                    return i;
                 }
             }
-            return false;
+            return -1;
         }
     });
