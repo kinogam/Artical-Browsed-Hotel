@@ -6,18 +6,17 @@ define([
     "exports"
 ],
     function (razor, browserStore, exports) {
+        "use strict";
+
         var hotelList,
-            hasInit = false,
-            storeName = "browsed_hotel";
+            storeName = "browsed_hotel",
+            container,
+            templateFn;
 
         exports.save = function (item) {
             ///<summary>
             ///保存浏览过的酒店数据
             ///</summary>
-
-            if (!hasInit) {
-                expots.init();
-            }
 
             var itemIndex = getItemIndex(item);
 
@@ -29,23 +28,29 @@ define([
             }
 
             updateStore();
+            render();
         };
 
         exports.getDataCount = function () {
             return hotelList.length;
         };
 
-        exports.init = function () {
+        exports.init = function (options) {
             ///<summary>
             ///初始化
-            ///</summary>
+            ///</summary>            
 
             hotelList = [];
             var storeValue = browserStore.getItem(storeName);
             if (storeValue != null) {
                 hotelList = JSON.parse(storeValue);
             }
-            hasInit = true;
+
+            if (options != null) {
+                container = options.container;
+                templateFn = razor(options.template);
+                render();
+            }
         };
 
         function updateStore() {
@@ -59,5 +64,9 @@ define([
                 }
             }
             return -1;
+        }
+
+        function render() {
+            container.innerHTML = razor(templateFn, { data: hotelList })
         }
     });
